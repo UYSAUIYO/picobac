@@ -18,7 +18,7 @@ import java.util.Properties;
 
 /**
  * @author YuWen
- * @Date 2021/3/1 21:44
+ * @Date 2023/07/06 1:11
  */
 public class SystemInfoUtil {
     private static final int OSHI_WAIT_SECOND = 1000;
