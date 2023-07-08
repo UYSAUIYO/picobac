@@ -1,8 +1,10 @@
 package com.yuwen303.picobac.utils;
 
 
+import cn.hutool.core.util.NumberUtil;
 import com.yuwen303.picobac.domain.*;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Data
+@Component
 public class SystemHardwareInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int OSHI_WAIT_SECOND = 1000;
@@ -73,6 +76,51 @@ public class SystemHardwareInfo implements Serializable {
         sys.setOsName(props.getProperty("os.name"));
         sys.setOsArch(props.getProperty("os.arch"));
         sys.setUserDir(props.getProperty("user.dir"));
+    }
+//java虚拟机
+    private void setJvmInfo(){
+        Properties props = System.getProperties();
+        jvm.setTotal(Runtime.getRuntime().totalMemory());
+        jvm.setMax(Runtime.getRuntime().maxMemory());
+        jvm.setFree(Runtime.getRuntime().freeMemory());
+        jvm.setVersion(props.getProperty("java.version"));
+        jvm.setHome(props.getProperty("java.home"));
+    }
+    //磁盘信息
+    private void setSysFiles(oshi.software.os.OperatingSystem os) {
+        sysFiles = new LinkedList<>();
+        oshi.software.os.OSFileStore[] fsArray = os.getFileSystem().getFileStores().toArray(new oshi.software.os.OSFileStore[0]);
+        for (oshi.software.os.OSFileStore fs : fsArray) {
+            long free = fs.getUsableSpace();
+            long total = fs.getTotalSpace();
+            long used = total - free;
+            SysFile sysFile = new SysFile();
+            sysFile.setDirName(fs.getMount());
+            sysFile.setSysTypeName(fs.getType());
+            sysFile.setTypeName(fs.getName());
+            sysFile.setTotal(convertFileSize(total));
+            sysFile.setFree(convertFileSize(free));
+            sysFile.setUsed(convertFileSize(used));
+            sysFile.setUsage(NumberUtil.round(NumberUtil.mul(used / total, 100), 2).doubleValue());
+            sysFiles.add(sysFile);
+        }
+    }
+    //convertFileSize
+    private String convertFileSize(long size) {
+        long kb = 1024;
+        long mb = kb * 1024;
+        long gb = mb * 1024;
+        if (size >= gb) {
+            return String.format("%.1f GB", (float) size / gb);
+        } else if (size >= mb) {
+            float f = (float) size / mb;
+            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
+        } else if (size >= kb) {
+            float f = (float) size / kb;
+            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
+        } else {
+            return String.format("%d B", size);
+        }
     }
 
 }
