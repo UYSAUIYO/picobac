@@ -2,6 +2,8 @@ package com.yuwen303.picobac.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Data;
+import org.springframework.stereotype.Component;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -20,14 +22,16 @@ import java.util.Properties;
  * @author YuWen
  * @Date 2023/07/06 1:11
  */
+@Data
+@Component
 public class SystemInfoUtil {
     private static final int OSHI_WAIT_SECOND = 1000;
-    private static SystemInfo systemInfo = new SystemInfo();
-    private static HardwareAbstractionLayer hardware = systemInfo.getHardware();
-    private static OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
+    private static final SystemInfo SYSTEM_INFO = new SystemInfo();
+    private static final HardwareAbstractionLayer HARDWARE = SYSTEM_INFO.getHardware();
+    private static final OperatingSystem OPERATING_SYSTEM = SYSTEM_INFO.getOperatingSystem();
     public static JSONObject getCpuInfo(){
         JSONObject cpuInfo = new JSONObject();
-        CentralProcessor processor = hardware.getProcessor();
+        CentralProcessor processor = HARDWARE.getProcessor();
         //CPU信息
         long[] prevTicks = processor.getSystemCpuLoadTicks();
         Util.sleep(OSHI_WAIT_SECOND);
@@ -46,6 +50,7 @@ public class SystemInfoUtil {
         cpuInfo.put("user",new DecimalFormat("#.##%").format(user * 1.0 / totalCpu));
         cpuInfo.put("iowait",new DecimalFormat("#.##%").format(iowait * 1.0 / totalCpu));
         cpuInfo.put("idle",new DecimalFormat("#.##%").format(idle * 1.0 / totalCpu));
+        System.out.println(cpuInfo);
         return cpuInfo;
     }
     public static JSONObject getJvmInfo(){
@@ -70,7 +75,7 @@ public class SystemInfoUtil {
     * 系统内存信息*/
     public static JSONObject getMemInfo(){
         JSONObject memInfo = new JSONObject();
-        GlobalMemory memory = hardware.getMemory();
+        GlobalMemory memory = HARDWARE.getMemory();
         long totalByte = memory.getTotal();
         long acailableByte = memory.getAvailable();
         memInfo.put("total", formatByte(totalByte));
@@ -83,7 +88,7 @@ public class SystemInfoUtil {
     //系统盘符信息
     public static JSONArray getSysFileInfo(){
         JSONArray sysFileInfo = new JSONArray();
-        FileSystem fileSystem = operatingSystem.getFileSystem();
+        FileSystem fileSystem = OPERATING_SYSTEM.getFileSystem();
         OSFileStore[] fsArray = fileSystem.getFileStores().toArray(new OSFileStore[0]);
         for (OSFileStore fileStore:fsArray){
             JSONObject sysFile = new JSONObject();
@@ -132,20 +137,20 @@ public class SystemInfoUtil {
     /*
     * 单位换算*/
     public static String formatByte(long byteNumber){
-        double FORMAT = 1024.0;
-        double kbNumber = byteNumber / FORMAT;
-        if(kbNumber < FORMAT){
+        double fORMAT = 1024.0;
+        double kbNumber = byteNumber / fORMAT;
+        if(kbNumber < fORMAT){
             return new DecimalFormat("#.##KB").format(kbNumber);
         }
-        double mbNumber = kbNumber / FORMAT;
-        if(mbNumber < FORMAT){
+        double mbNumber = kbNumber / fORMAT;
+        if(mbNumber < fORMAT){
             return new DecimalFormat("#.##MB").format(mbNumber);
         }
-        double gbNumber = mbNumber / FORMAT;
-        if(gbNumber < FORMAT){
+        double gbNumber = mbNumber / fORMAT;
+        if(gbNumber < fORMAT){
             return new DecimalFormat("#.##GB").format(gbNumber);
         }
-        double tbNumber = gbNumber / FORMAT;
+        double tbNumber = gbNumber / fORMAT;
         return new DecimalFormat("#.##TB").format(tbNumber);
 
     }
