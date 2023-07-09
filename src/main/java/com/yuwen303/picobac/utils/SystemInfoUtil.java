@@ -132,6 +132,7 @@ public class SystemInfoUtil {
         info.put("memInfo", getMemInfo());
         info.put("sysFileInfo", getSysFileInfo());
         info.put("sysInfo", getSysInfo());
+        System.out.println(info);
         return info;
     }
     /*
