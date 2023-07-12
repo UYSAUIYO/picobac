@@ -48,13 +48,14 @@ public class SystemInfoUtil {
         //cpu核数
         cpuInfo.put("cpuNum", processor.getLogicalProcessorCount());
         //cpu系统使用率
-        cpuInfo.put("cSys",new DecimalFormat("#.##%").format(cSys * 1.0 / totalCpu));
+        cpuInfo.put("cSys",new DecimalFormat("#.##").format(cSys * 1.0 / totalCpu));
         //cpu用户使用率
-        cpuInfo.put("user",new DecimalFormat("#.##%").format(user * 1.0 / totalCpu));
+        cpuInfo.put("user",new DecimalFormat("#.##").format(user * 1.0 / totalCpu));
         //cpu当前等待率
-        cpuInfo.put("iowait",new DecimalFormat("#.##%").format(iowait * 1.0 / totalCpu));
+        cpuInfo.put("iowait",new DecimalFormat("#.##").format(iowait * 1.0 / totalCpu));
         //cpu当前使用率
-        cpuInfo.put("idle",new DecimalFormat("#.##%").format(idle * 1.0 / totalCpu));
+        cpuInfo.put("idle",new DecimalFormat("#.##").format(idle * 100.0 / totalCpu));
+        System.out.println (cpuInfo);
         return cpuInfo;
     }
     public static JSONObject getJvmInfo(){
@@ -138,12 +139,6 @@ public class SystemInfoUtil {
         info.put("sysInfo", getSysInfo());
 //      System.out.println(info);
         return info;
-    }
-    public static JSONObject reGetInfo() {
-        JSONObject regetInfo = new JSONObject();
-        regetInfo.put("cpuInfo", getCpuInfo());
-        regetInfo.put ("memInfo", getMemInfo());
-        return regetInfo;
     }
     /*
     * 单位换算*/
