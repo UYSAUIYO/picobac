@@ -54,7 +54,7 @@ public class SystemInfoUtil {
         //cpu当前等待率
         cpuInfo.put("iowait",new DecimalFormat("#.##").format(iowait * 1.0 / totalCpu));
         //cpu当前使用率
-        cpuInfo.put("idle",new DecimalFormat("#.##").format(idle * 100.0 / totalCpu));
+        cpuInfo.put("idle",new DecimalFormat("#.##").format(idle * 1.0 / totalCpu));
         System.out.println (cpuInfo);
         return cpuInfo;
     }
