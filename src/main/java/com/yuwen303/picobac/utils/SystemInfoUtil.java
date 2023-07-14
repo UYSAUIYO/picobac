@@ -143,20 +143,20 @@ public class SystemInfoUtil {
     /*
     * 单位换算*/
     public static String formatByte(long byteNumber){
-        double fORMAT = 1024.0;
-        double kbNumber = byteNumber / fORMAT;
-        if(kbNumber < fORMAT){
+        double format = 1024.0;
+        double kbNumber = byteNumber / format;
+        if(kbNumber < format){
             return new DecimalFormat("#.##KB").format(kbNumber);
         }
-        double mbNumber = kbNumber / fORMAT;
-        if(mbNumber < fORMAT){
+        double mbNumber = kbNumber / format;
+        if(mbNumber < format){
             return new DecimalFormat("#.##MB").format(mbNumber);
         }
-        double gbNumber = mbNumber / fORMAT;
-        if(gbNumber < fORMAT){
+        double gbNumber = mbNumber / format;
+        if(gbNumber < format){
             return new DecimalFormat("#.##GB").format(gbNumber);
         }
-        double tbNumber = gbNumber / fORMAT;
+        double tbNumber = gbNumber / format;
         return new DecimalFormat("#.##TB").format(tbNumber);
 
     }
